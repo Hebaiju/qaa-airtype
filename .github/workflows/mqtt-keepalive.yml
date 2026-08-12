@@ -25,3 +25,12 @@ jobs:
           MQTT_TOPIC: ${{ secrets.MQTT_TOPIC }}
           MQTT_PAYLOAD: ${{ secrets.MQTT_PAYLOAD }}
         run: python scripts/mqtt_keepalive.py
+      - name: Notify PushPlus
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 \
+            --get 'https://www.pushplus.plus/send' \
+            --data-urlencode "token=${PUSHPLUS_TOKEN}" \
+            --data-urlencode 'title=MQTT 保活运行成功' \
+            --data-urlencode 'content=GitHub Actions 已成功连接 MQTT，并完成自发自收。'
